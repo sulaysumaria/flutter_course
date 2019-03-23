@@ -1,4 +1,4 @@
-# flutter_course
+# flutter_course - v0.0.1
 
 Learning flutter.
 

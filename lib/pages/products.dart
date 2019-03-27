@@ -3,14 +3,10 @@ import 'package:flutter/material.dart';
 import './../product_manager.dart';
 
 class ProductsPage extends StatelessWidget {
-  final List<Map<String, String>> products;
-  final Function addProduct;
-  final Function deleteProduct;
+  final List<Map<String, dynamic>> products;
 
   ProductsPage({
     @required this.products,
-    @required this.addProduct,
-    @required this.deleteProduct,
   });
 
   @override
@@ -37,8 +33,6 @@ class ProductsPage extends StatelessWidget {
       ),
       body: ProductManager(
         products: products,
-        addProduct: addProduct,
-        deleteProduct: deleteProduct,
       ),
     );
   }

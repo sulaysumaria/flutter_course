@@ -38,3 +38,6 @@ $ flutter run
 - FlatButton
 - WillPopScope
 - ButtonBar
+- TextField
+- SizedBox
+- SwitchListTile

@@ -35,6 +35,8 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         primarySwatch: Colors.deepOrange,
         accentColor: Colors.deepPurple,
+        brightness: Brightness.light,
+        buttonColor: Colors.deepPurple,
       ),
       routes: {
         '/': (BuildContext context) {
@@ -64,7 +66,11 @@ class _MyAppState extends State<MyApp> {
           return MaterialPageRoute<bool>(
             builder: (BuildContext context) {
               return ProductPage(
-                  _products[index]['title'], _products[index]['image']);
+                _products[index]['title'],
+                _products[index]['image'],
+                _products[index]['price'],
+                _products[index]['description'],
+              );
             },
           );
         }

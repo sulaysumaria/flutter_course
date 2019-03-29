@@ -29,6 +29,12 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  void _updateProduct(int index, Map<String, dynamic> newProduct) {
+    setState(() {
+      _products[index] = newProduct;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -51,6 +57,8 @@ class _MyAppState extends State<MyApp> {
           return ProductsAdminPage(
             addProduct: _addProduct,
             deleteProduct: _deleteProduct,
+            products: _products,
+            updateProduct: _updateProduct,
           );
         },
       },

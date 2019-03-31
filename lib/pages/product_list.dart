@@ -4,14 +4,32 @@ import 'package:scoped_model/scoped_model.dart';
 import './product_edit.dart';
 import './../scoped-models/main.dart';
 
-class ProductListPage extends StatelessWidget {
+class ProductListPage extends StatefulWidget {
+  final MainModel model;
+
+  ProductListPage(this.model);
+
+  @override
+  State<StatefulWidget> createState() {
+    return _ProductListPageState();
+  }
+}
+
+class _ProductListPageState extends State<ProductListPage> {
+  @override
+  initState() {
+    widget.model.fetchProducts();
+
+    super.initState();
+  }
+
   Widget _buildEditButton(BuildContext context, MainModel model, int index) {
     return IconButton(
       icon: Icon(Icons.edit),
       onPressed: () {
         Navigator.of(context)
             .push(MaterialPageRoute(builder: (BuildContext context) {
-          model.selectProduct(index);
+          model.selectProduct(model.allProducts[index].id);
 
           return ProductEditPage();
         })).then((_) {
@@ -34,8 +52,29 @@ class ProductListPage extends StatelessWidget {
               ),
               onDismissed: (DismissDirection direction) {
                 if (direction == DismissDirection.endToStart) {
-                  model.selectProduct(index);
-                  model.deleteProduct();
+                  model.selectProduct(model.allProducts[index].id);
+                  model.deleteProduct().then((bool success) {
+                    if (!success) {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext contetx) {
+                          return AlertDialog(
+                            title: Text('Something went wrong'),
+                            content: Text('Please try again'),
+                            actions: <Widget>[
+                              FlatButton(
+                                child: Text('Okay'),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    }
+                  });
+                  ;
                 }
               },
               direction: DismissDirection.endToStart,
@@ -45,7 +84,7 @@ class ProductListPage extends StatelessWidget {
                     title: Text(model.allProducts[index].title),
                     leading: CircleAvatar(
                       backgroundImage:
-                          AssetImage(model.allProducts[index].image),
+                          NetworkImage(model.allProducts[index].image),
                     ),
                     subtitle:
                         Text('\$${model.allProducts[index].price.toString()}'),

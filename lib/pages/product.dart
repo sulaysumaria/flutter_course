@@ -8,9 +8,9 @@ import './../scoped-models/main.dart';
 import './../models/product.dart';
 
 class ProductPage extends StatelessWidget {
-  final int index;
+  final Product product;
 
-  ProductPage(this.index);
+  ProductPage(this.product);
 
   Widget _buildAddressPriceRow(double price) {
     return Row(
@@ -52,15 +52,18 @@ class ProductPage extends StatelessWidget {
       },
       child: ScopedModelDescendant<MainModel>(
         builder: (BuildContext context, Widget child, MainModel model) {
-          final Product product = model.allProducts[index];
-
           return Scaffold(
             appBar: AppBar(
               title: Text(product.title),
             ),
             body: Column(
               children: <Widget>[
-                Image.asset(product.image),
+                FadeInImage(
+                  image: NetworkImage(product.image),
+                  placeholder: AssetImage('assets/food.jpg'),
+                  height: 300.0,
+                  fit: BoxFit.cover,
+                ),
                 Container(
                   child: TitleDefault(product.title),
                   padding: EdgeInsets.all(10.0),

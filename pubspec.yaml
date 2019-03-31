@@ -10,6 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   scoped_model: any
+  http: any
 
 dev_dependencies:
   flutter_test:

@@ -76,11 +76,15 @@ class _ProductEditPageState extends State<ProductEditPage> {
   }
 
   Widget _buildSubmitButton(MainModel model) {
-    return RaisedButton(
-      child: Text('Save'),
-      textColor: Colors.white,
-      onPressed: () => _submitForm(model),
-    );
+    return model.isLoading
+        ? Center(
+            child: CircularProgressIndicator(),
+          )
+        : RaisedButton(
+            child: Text('Save'),
+            textColor: Colors.white,
+            onPressed: () => _submitForm(model),
+          );
   }
 
   Widget _buildPageContent(MainModel model) {
@@ -120,32 +124,80 @@ class _ProductEditPageState extends State<ProductEditPage> {
 
     _formKey.currentState.save();
 
-    if (model.selectedProduct == null) {
-      model.addProduct(
+    if (model.selProductId == null) {
+      model
+          .addProduct(
         _formData['title'],
         _formData['description'],
         _formData['image'],
         _formData['price'],
-      );
+      )
+          .then((bool success) {
+        if (success) {
+          Navigator.pushReplacementNamed(context, '/products').then((_) {
+            model.selectProduct(null);
+          });
+        } else {
+          showDialog(
+            context: context,
+            builder: (BuildContext contetx) {
+              return AlertDialog(
+                title: Text('Something went wrong'),
+                content: Text('Please try again'),
+                actions: <Widget>[
+                  FlatButton(
+                    child: Text('Okay'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        }
+      });
     } else {
-      model.updateProduct(
+      model
+          .updateProduct(
         _formData['title'],
         _formData['description'],
         _formData['image'],
         _formData['price'],
-      );
+      )
+          .then((bool success) {
+        if (success) {
+          Navigator.pushReplacementNamed(context, '/products').then((_) {
+            model.selectProduct(null);
+          });
+        } else {
+          showDialog(
+            context: context,
+            builder: (BuildContext contetx) {
+              return AlertDialog(
+                title: Text('Something went wrong'),
+                content: Text('Please try again'),
+                actions: <Widget>[
+                  FlatButton(
+                    child: Text('Okay'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        }
+      });
     }
-
-    Navigator.pushReplacementNamed(context, '/products').then((_) {
-      model.selectProduct(null);
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<MainModel>(
       builder: (BuildContext context, Widget child, MainModel model) {
-        return model.selProductIndex == null
+        return model.selProductId == null
             ? _buildPageContent(model)
             : Scaffold(
                 appBar: AppBar(

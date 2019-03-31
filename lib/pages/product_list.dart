@@ -1,36 +1,64 @@
 import 'package:flutter/material.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 import './product_edit.dart';
+import './../scoped-models/main.dart';
 
 class ProductListPage extends StatelessWidget {
-  final List<Map<String, dynamic>> products;
-  final Function updateProduct;
+  Widget _buildEditButton(BuildContext context, MainModel model, int index) {
+    return IconButton(
+      icon: Icon(Icons.edit),
+      onPressed: () {
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (BuildContext context) {
+          model.selectProduct(index);
 
-  ProductListPage(this.products, {this.updateProduct});
+          return ProductEditPage();
+        })).then((_) {
+          model.selectProduct(null);
+        });
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemBuilder: (BuildContext context, int index) {
-        return ListTile(
-          title: Text(products[index]['title']),
-          leading: Image.asset(products[index]['image']),
-          trailing: IconButton(
-            icon: Icon(Icons.edit),
-            onPressed: () {
-              Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (BuildContext context) {
-                return ProductEditPage(
-                  product: products[index],
-                  updateProduct: updateProduct,
-                  productIndex: index,
-                );
-              }));
-            },
-          ),
+    return ScopedModelDescendant<MainModel>(
+      builder: (BuildContext context, Widget child, MainModel model) {
+        return ListView.builder(
+          itemBuilder: (BuildContext context, int index) {
+            return Dismissible(
+              key: Key(model.allProducts[index].title),
+              background: Container(
+                color: Colors.red,
+              ),
+              onDismissed: (DismissDirection direction) {
+                if (direction == DismissDirection.endToStart) {
+                  model.selectProduct(index);
+                  model.deleteProduct();
+                }
+              },
+              direction: DismissDirection.endToStart,
+              child: Column(
+                children: <Widget>[
+                  ListTile(
+                    title: Text(model.allProducts[index].title),
+                    leading: CircleAvatar(
+                      backgroundImage:
+                          AssetImage(model.allProducts[index].image),
+                    ),
+                    subtitle:
+                        Text('\$${model.allProducts[index].price.toString()}'),
+                    trailing: _buildEditButton(context, model, index),
+                  ),
+                  Divider(),
+                ],
+              ),
+            );
+          },
+          itemCount: model.allProducts.length,
         );
       },
-      itemCount: products.length,
     );
   }
 }

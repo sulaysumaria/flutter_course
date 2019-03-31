@@ -74,7 +74,6 @@ class _ProductListPageState extends State<ProductListPage> {
                       );
                     }
                   });
-                  ;
                 }
               },
               direction: DismissDirection.endToStart,

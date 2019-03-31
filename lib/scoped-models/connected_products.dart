@@ -246,6 +246,9 @@ mixin UserModel on ConnectedProductsModel {
   }
 
   Future<Map<String, dynamic>> signup(String email, String password) async {
+    _isLoading = true;
+    notifyListeners();
+
     final Map<String, dynamic> authData = {
       'email': email,
       'password': password,
@@ -270,11 +273,17 @@ mixin UserModel on ConnectedProductsModel {
         message = 'This email already exists.';
       }
 
+      _isLoading = false;
+      notifyListeners();
+
       return {
         'success': !hasError,
         'message': message,
       };
     } catch (e) {
+      _isLoading = false;
+      notifyListeners();
+
       return {
         'success': false,
       };

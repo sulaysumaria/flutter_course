@@ -19,12 +19,19 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  final MainModel _model = MainModel();
+
+  @override
+  void initState() {
+    _model.autoAuth();
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final MainModel model = MainModel();
-
     return ScopedModel<MainModel>(
-      model: model,
+      model: _model,
       child: MaterialApp(
         theme: ThemeData(
           primarySwatch: Colors.deepOrange,
@@ -34,13 +41,17 @@ class _MyAppState extends State<MyApp> {
         ),
         routes: {
           '/': (BuildContext context) {
-            return AuthPage();
+            return ScopedModelDescendant<MainModel>(
+              builder: (BuildContext context, Widget child, MainModel model) {
+                return model.user == null ? AuthPage() : ProductsPage(model);
+              },
+            );
           },
           '/products': (BuildContext context) {
-            return ProductsPage(model);
+            return ProductsPage(_model);
           },
           '/admin': (BuildContext context) {
-            return ProductsAdminPage(model);
+            return ProductsAdminPage(_model);
           },
         },
         onGenerateRoute: (RouteSettings settings) {
@@ -52,7 +63,7 @@ class _MyAppState extends State<MyApp> {
           if (pathElements[1] == 'product') {
             final String productId = pathElements[2];
             final Product product =
-                model.allProducts.firstWhere((Product product) {
+                _model.allProducts.firstWhere((Product product) {
               return product.id == productId;
             });
 
@@ -70,7 +81,7 @@ class _MyAppState extends State<MyApp> {
         onUnknownRoute: (RouteSettings settings) {
           return MaterialPageRoute(
             builder: (BuildContext context) {
-              return ProductsPage(model);
+              return ProductsPage(_model);
             },
           );
         },

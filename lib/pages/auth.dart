@@ -165,12 +165,14 @@ class _AuthPageState extends State<AuthPage> {
                     SizedBox(
                       height: 10.0,
                     ),
-                    _authMode == AuthMode.Signup
-                        ? _buildPasswordTextField()
-                        : Container(),
+                    _buildPasswordTextField(),
                     SizedBox(
                       height: 10.0,
                     ),
+                    _authMode == AuthMode.Signup
+                        ? _buildPasswordConfirmTextField()
+                        : Container(),
+                    _buildAcceptSwitch(),
                     FlatButton(
                       child: Text(
                           'Switch to ${_authMode == AuthMode.Login ? 'Signup' : 'Login'}'),
@@ -182,8 +184,6 @@ class _AuthPageState extends State<AuthPage> {
                         });
                       },
                     ),
-                    _buildPasswordConfirmTextField(),
-                    _buildAcceptSwitch(),
                     SizedBox(
                       height: 10.0,
                     ),

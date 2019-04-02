@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
 
+import './../constants.dart';
 import './../models/product.dart';
 import './../models/user.dart';
 import './../models/auth.dart';
@@ -253,10 +254,10 @@ mixin UserModel on ConnectedProductsModel {
 
     if (mode == AuthMode.Login) {
       url =
-          'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=AIzaSyAwQj5tdu64oefSDpD-xp9Tin0WNuH8yuU';
+          'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=$FIREBASE_API_KEY';
     } else {
       url =
-          'https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=AIzaSyAwQj5tdu64oefSDpD-xp9Tin0WNuH8yuU';
+          'https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=$FIREBASE_API_KEY';
     }
 
     try {

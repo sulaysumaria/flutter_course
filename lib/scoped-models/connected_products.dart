@@ -76,7 +76,7 @@ mixin ProductsModel on ConnectedProductsModel {
 
     try {
       final http.Response response = await http.post(
-        'https://flutter-course-62ecc.firebaseio.com/products.json',
+        'https://flutter-course-62ecc.firebaseio.com/products.json?auth=${_authenticatedUser.token}',
         body: json.encode(productData),
       );
 
@@ -122,7 +122,7 @@ mixin ProductsModel on ConnectedProductsModel {
 
     return http
         .delete(
-            'https://flutter-course-62ecc.firebaseio.com/products/$deletedProductId.json')
+            'https://flutter-course-62ecc.firebaseio.com/products/$deletedProductId.json?auth=${_authenticatedUser.token}')
         .then((http.Response response) {
       _isLoading = false;
       notifyListeners();
@@ -153,7 +153,7 @@ mixin ProductsModel on ConnectedProductsModel {
 
     return http
         .put(
-      'https://flutter-course-62ecc.firebaseio.com/products/$_selProductId.json',
+      'https://flutter-course-62ecc.firebaseio.com/products/$_selProductId.json?auth=${_authenticatedUser.token}',
       body: json.encode(updateData),
     )
         .then((http.Response response) {
@@ -202,7 +202,9 @@ mixin ProductsModel on ConnectedProductsModel {
     notifyListeners();
 
     return http
-        .get('https://flutter-course-62ecc.firebaseio.com/products.json')
+        .get(
+      'https://flutter-course-62ecc.firebaseio.com/products.json?auth=${_authenticatedUser.token}',
+    )
         .then<Null>((http.Response response) {
       final List<Product> fetchedProductList = [];
 
@@ -274,6 +276,12 @@ mixin UserModel on ConnectedProductsModel {
       if (responseData.containsKey('idToken')) {
         hasError = false;
         message = 'Authentication succeeded.';
+
+        _authenticatedUser = User(
+          id: responseData['localId'],
+          email: responseData['email'],
+          token: responseData['idToken'],
+        );
       } else if (responseData['error']['message'] == 'EMAIL_NOT_FOUND') {
         message = 'This email was not found.';
       } else if (responseData['error']['message'] == 'INVALID_PASSWORD') {
@@ -297,12 +305,6 @@ mixin UserModel on ConnectedProductsModel {
         'success': false,
       };
     }
-
-    // _authenticatedUser = User(
-    //   id: 'asdasdasd',
-    //   email: email,
-    //   password: password,
-    // );
   }
 }
 

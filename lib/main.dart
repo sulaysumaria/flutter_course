@@ -20,10 +20,17 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final MainModel _model = MainModel();
+  bool _isAuthenticated = false;
 
   @override
   void initState() {
     _model.autoAuth();
+
+    _model.userSubject.listen((bool isAuthenticated) {
+      setState(() {
+        _isAuthenticated = isAuthenticated;
+      });
+    });
 
     super.initState();
   }
@@ -41,16 +48,19 @@ class _MyAppState extends State<MyApp> {
         ),
         routes: {
           '/': (BuildContext context) {
-            return _model.user == null ? AuthPage() : ProductsPage(_model);
-          },
-          '/products': (BuildContext context) {
-            return ProductsPage(_model);
+            return !_isAuthenticated ? AuthPage() : ProductsPage(_model);
           },
           '/admin': (BuildContext context) {
-            return ProductsAdminPage(_model);
+            return !_isAuthenticated ? AuthPage() : ProductsAdminPage(_model);
           },
         },
         onGenerateRoute: (RouteSettings settings) {
+          if (!_isAuthenticated) {
+            return MaterialPageRoute<bool>(builder: (BuildContext context) {
+              return AuthPage();
+            });
+          }
+
           final List<String> pathElements = settings.name.split('/');
           if (pathElements[0] != '') {
             return null;
@@ -67,7 +77,7 @@ class _MyAppState extends State<MyApp> {
 
             return MaterialPageRoute<bool>(
               builder: (BuildContext context) {
-                return ProductPage(product);
+                return !_isAuthenticated ? AuthPage() : ProductPage(product);
               },
             );
           }
@@ -77,7 +87,7 @@ class _MyAppState extends State<MyApp> {
         onUnknownRoute: (RouteSettings settings) {
           return MaterialPageRoute(
             builder: (BuildContext context) {
-              return ProductsPage(_model);
+              return !_isAuthenticated ? AuthPage() : ProductsPage(_model);
             },
           );
         },

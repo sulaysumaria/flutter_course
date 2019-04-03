@@ -12,6 +12,7 @@ dependencies:
   scoped_model: any
   http: any
   shared_preferences: any
+  rxdart: any
 
 dev_dependencies:
   flutter_test:

@@ -134,7 +134,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
       )
           .then((bool success) {
         if (success) {
-          Navigator.pushReplacementNamed(context, '/products').then((_) {
+          Navigator.pushReplacementNamed(context, '/').then((_) {
             model.selectProduct(null);
           });
         } else {
@@ -167,7 +167,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
       )
           .then((bool success) {
         if (success) {
-          Navigator.pushReplacementNamed(context, '/products').then((_) {
+          Navigator.pushReplacementNamed(context, '/').then((_) {
             model.selectProduct(null);
           });
         } else {

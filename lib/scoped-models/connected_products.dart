@@ -236,7 +236,7 @@ mixin ProductsModel on ConnectedProductsModel {
     notifyListeners();
   }
 
-  Future<Null> fetchProducts() {
+  Future<Null> fetchProducts({onlyForUser = false}) {
     _isLoading = true;
     notifyListeners();
 
@@ -269,7 +269,9 @@ mixin ProductsModel on ConnectedProductsModel {
         });
       }
 
-      _products = fetchedProductList;
+      _products = fetchedProductList.where((Product product) {
+        return product.userId == _authenticatedUser.id;
+      });
 
       _isLoading = false;
       notifyListeners();

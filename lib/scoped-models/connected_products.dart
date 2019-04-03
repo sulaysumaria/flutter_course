@@ -183,15 +183,52 @@ mixin ProductsModel on ConnectedProductsModel {
     });
   }
 
-  void toggleProductFavouriteStatus() {
+  void toggleProductFavouriteStatus() async {
     final bool isCurrentlFavourite = selectedProduct.isFavourite;
     final bool newFavouriteStatus = !isCurrentlFavourite;
 
-    updateProduct(selectedProduct.title, selectedProduct.description,
-            selectedProduct.image, selectedProduct.price, newFavouriteStatus)
-        .then((_) {
-      notifyListeners();
-    });
+    final Product newProduct = Product(
+      id: selectedProduct.id,
+      title: selectedProduct.title,
+      description: selectedProduct.description,
+      image: selectedProduct.image,
+      price: selectedProduct.price,
+      userEmail: _authenticatedUser.email,
+      userId: _authenticatedUser.id,
+      isFavourite: newFavouriteStatus,
+    );
+
+    _products[selectedProductIndex] = newProduct;
+
+    notifyListeners();
+
+    http.Response response;
+
+    if (newFavouriteStatus) {
+      response = await http.put(
+        'https://flutter-course-62ecc.firebaseio.com/products/$_selProductId/wishlistUsers/${_authenticatedUser.id}.json?auth=${_authenticatedUser.token}',
+        body: json.encode(true),
+      );
+    } else {
+      response = await http.delete(
+        'https://flutter-course-62ecc.firebaseio.com/products/$_selProductId/wishlistUsers/${_authenticatedUser.id}.json?auth=${_authenticatedUser.token}',
+      );
+    }
+
+    if (response.statusCode != 200 && response.statusCode != 201) {
+      final Product newProduct = Product(
+        id: selectedProduct.id,
+        title: selectedProduct.title,
+        description: selectedProduct.description,
+        image: selectedProduct.image,
+        price: selectedProduct.price,
+        userEmail: _authenticatedUser.email,
+        userId: _authenticatedUser.id,
+        isFavourite: !newFavouriteStatus,
+      );
+
+      _products[selectedProductIndex] = newProduct;
+    }
   }
 
   void toggleDisplayMode() {

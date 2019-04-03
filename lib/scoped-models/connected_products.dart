@@ -379,13 +379,12 @@ mixin UserModel on ConnectedProductsModel {
     prefs.remove('userEmail');
     prefs.remove('userId');
     prefs.remove('expiryTime');
+
+    _userSubject.add(false);
   }
 
   void setAuthTimeout(int time) {
-    _authTimer = Timer(Duration(seconds: time), () {
-      logout();
-      _userSubject.add(false);
-    });
+    _authTimer = Timer(Duration(seconds: time), logout);
   }
 }
 

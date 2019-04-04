@@ -13,6 +13,7 @@ dependencies:
   http: any
   shared_preferences: any
   rxdart: any
+  map_view: any
 
 dev_dependencies:
   flutter_test:
